@@ -1,0 +1,647 @@
+{
+  "namespaces": [
+    "public"
+  ],
+  "name": "public",
+  "tables": [
+    {
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        }
+      },
+      "name": "environment",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "environment_pkey",
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "grpack",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "grpack_pkey",
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "environment_name": {
+          "name": "environment_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "grpack_bundle_name": {
+          "name": "grpack_bundle_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        }
+      },
+      "name": "grpack_bundle",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "grpack_bundle_pkey",
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "grpack_bundle_environment_name_foreign": {
+          "constraintName": "grpack_bundle_environment_name_foreign",
+          "columnNames": [
+            "environment_name"
+          ],
+          "localTableName": "public.grpack_bundle",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.environment",
+          "deleteRule": "cascade"
+        },
+        "grpack_bundle_grpack_bundle_name_foreign": {
+          "constraintName": "grpack_bundle_grpack_bundle_name_foreign",
+          "columnNames": [
+            "grpack_bundle_name"
+          ],
+          "localTableName": "public.grpack_bundle",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.grpack_bundle",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "grpack_bundle_name": {
+          "name": "grpack_bundle_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "grpack_name": {
+          "name": "grpack_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "grpack_bundle_grpacks",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "grpack_bundle_grpacks_pkey",
+          "columnNames": [
+            "grpack_bundle_name",
+            "grpack_name"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "grpack_bundle_grpacks_grpack_bundle_name_foreign": {
+          "constraintName": "grpack_bundle_grpacks_grpack_bundle_name_foreign",
+          "columnNames": [
+            "grpack_bundle_name"
+          ],
+          "localTableName": "public.grpack_bundle_grpacks",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.grpack_bundle",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "grpack_bundle_grpacks_grpack_name_foreign": {
+          "constraintName": "grpack_bundle_grpacks_grpack_name_foreign",
+          "columnNames": [
+            "grpack_name"
+          ],
+          "localTableName": "public.grpack_bundle_grpacks",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.grpack",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "environment_name": {
+          "name": "environment_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 50,
+          "mappedType": "string"
+        }
+      },
+      "name": "node_group",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "node_group_pkey",
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "node_group_environment_name_foreign": {
+          "constraintName": "node_group_environment_name_foreign",
+          "columnNames": [
+            "environment_name"
+          ],
+          "localTableName": "public.node_group",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.environment",
+          "deleteRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "node_group_name": {
+          "name": "node_group_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "grpack_name": {
+          "name": "grpack_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "node_group_grpacks",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "node_group_grpacks_pkey",
+          "columnNames": [
+            "node_group_name",
+            "grpack_name"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "node_group_grpacks_node_group_name_foreign": {
+          "constraintName": "node_group_grpacks_node_group_name_foreign",
+          "columnNames": [
+            "node_group_name"
+          ],
+          "localTableName": "public.node_group_grpacks",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.node_group",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "node_group_grpacks_grpack_name_foreign": {
+          "constraintName": "node_group_grpacks_grpack_name_foreign",
+          "columnNames": [
+            "grpack_name"
+          ],
+          "localTableName": "public.node_group_grpacks",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.grpack",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "environment_name": {
+          "name": "environment_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "node_group_name": {
+          "name": "node_group_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 50,
+          "mappedType": "string"
+        }
+      },
+      "name": "node",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "node_pkey",
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "node_environment_name_foreign": {
+          "constraintName": "node_environment_name_foreign",
+          "columnNames": [
+            "environment_name"
+          ],
+          "localTableName": "public.node",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.environment",
+          "deleteRule": "cascade"
+        },
+        "node_node_group_name_foreign": {
+          "constraintName": "node_node_group_name_foreign",
+          "columnNames": [
+            "node_group_name"
+          ],
+          "localTableName": "public.node",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.node_group",
+          "deleteRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "node_name": {
+          "name": "node_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 50,
+          "mappedType": "string"
+        },
+        "grpack_name": {
+          "name": "grpack_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "node_grpacks",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "node_grpacks_pkey",
+          "columnNames": [
+            "node_name",
+            "grpack_name"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "node_grpacks_node_name_foreign": {
+          "constraintName": "node_grpacks_node_name_foreign",
+          "columnNames": [
+            "node_name"
+          ],
+          "localTableName": "public.node_grpacks",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.node",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "node_grpacks_grpack_name_foreign": {
+          "constraintName": "node_grpacks_grpack_name_foreign",
+          "columnNames": [
+            "grpack_name"
+          ],
+          "localTableName": "public.node_grpacks",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.grpack",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "os_name": {
+          "name": "os_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "version": {
+          "name": "version",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "os",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "os_pkey",
+          "columnNames": [
+            "os_name",
+            "version"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "package_name": {
+          "name": "package_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "version": {
+          "name": "version",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "package_data",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "package_data_pkey",
+          "columnNames": [
+            "package_name",
+            "version"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "os_os_name": {
+          "name": "os_os_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "os_version": {
+          "name": "os_version",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "package_data_package_name": {
+          "name": "package_data_package_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "package_data_version": {
+          "name": "package_data_version",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "grpack_name": {
+          "name": "grpack_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "package",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "package_pkey",
+          "columnNames": [
+            "os_os_name",
+            "os_version",
+            "package_data_package_name",
+            "package_data_version"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "package_os_os_name_os_version_foreign": {
+          "constraintName": "package_os_os_name_os_version_foreign",
+          "columnNames": [
+            "os_os_name",
+            "os_version"
+          ],
+          "localTableName": "public.package",
+          "referencedColumnNames": [
+            "os_name",
+            "version"
+          ],
+          "referencedTableName": "public.os",
+          "updateRule": "cascade"
+        },
+        "package_package_data_package_name_package_data_version_foreign": {
+          "constraintName": "package_package_data_package_name_package_data_version_foreign",
+          "columnNames": [
+            "package_data_package_name",
+            "package_data_version"
+          ],
+          "localTableName": "public.package",
+          "referencedColumnNames": [
+            "package_name",
+            "version"
+          ],
+          "referencedTableName": "public.package_data",
+          "updateRule": "cascade"
+        },
+        "package_grpack_name_foreign": {
+          "constraintName": "package_grpack_name_foreign",
+          "columnNames": [
+            "grpack_name"
+          ],
+          "localTableName": "public.package",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.grpack",
+          "updateRule": "cascade"
+        }
+      }
+    }
+  ]
+}
