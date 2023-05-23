@@ -37,7 +37,7 @@ export class GrpackBundleController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.grpackBundleService.findOne(+id);
+    return this.grpackBundleService.findOne(id);
   }
 
   @Patch(':id')
@@ -45,11 +45,11 @@ export class GrpackBundleController {
     @Param('id') id: string,
     @Body() updateGrpackBundleDto: UpdateGrpackBundleDto,
   ) {
-    return this.grpackBundleService.update(+id, updateGrpackBundleDto);
+    return this.grpackBundleService.update(id, updateGrpackBundleDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.grpackBundleService.remove(+id);
+    return this.grpackBundleService.remove(id);
   }
 }

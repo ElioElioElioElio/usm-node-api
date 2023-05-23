@@ -44,18 +44,18 @@ export class GrpackBundleService {
   }
 
   findAll() {
-    return `This action returns all grpackBundle`;
+    return this.grpackBundleRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} grpackBundle`;
+  findOne(id: string) {
+    return this.grpackBundleRepository.findOneOrFail({ name: id });
   }
 
-  update(id: number, updateGrpackBundleDto: UpdateGrpackBundleDto) {
+  update(id: string, updateGrpackBundleDto: UpdateGrpackBundleDto) {
     return `This action updates a #${id} grpackBundle`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} grpackBundle`;
   }
 
