@@ -15,21 +15,24 @@ export class EnvironmentService {
   ) {}
 
   async create(createEnvironmentDto: CreateEnvironmentDto) {
+    /*
     try {
       const env = this.environmentRepository.create(createEnvironmentDto);
       await this.em.persistAndFlush(env);
       return env;
     } catch (error: unknown) {
       throw error;
-    }
+    }*/
   }
 
   findAll() {
-    return this.environmentRepository.findAll();
+    return this.environmentRepository.findAll({
+      populate: ['nodes', 'nodeGroups', 'grpackBundle'],
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} environment`;
+  async findOne(id: string) {
+    return await this.environmentRepository.findOneOrFail({ name: id });
   }
 
   update(id: number, updateEnvironmentDto: UpdateEnvironmentDto) {

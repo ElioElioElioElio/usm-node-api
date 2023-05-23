@@ -37,11 +37,12 @@
       "columns": {
         "name": {
           "name": "name",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "length": 50,
           "mappedType": "string"
         }
       },
@@ -89,7 +90,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 50,
           "mappedType": "string"
         }
@@ -131,6 +132,7 @@
             "name"
           ],
           "referencedTableName": "public.grpack_bundle",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       }
@@ -149,11 +151,12 @@
         },
         "grpack_name": {
           "name": "grpack_name",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "length": 50,
           "mappedType": "string"
         }
       },
@@ -267,11 +270,12 @@
         },
         "grpack_name": {
           "name": "grpack_name",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "length": 50,
           "mappedType": "string"
         }
       },
@@ -407,11 +411,12 @@
         },
         "grpack_name": {
           "name": "grpack_name",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "length": 50,
           "mappedType": "string"
         }
       },
@@ -575,11 +580,12 @@
         },
         "grpack_name": {
           "name": "grpack_name",
-          "type": "varchar(255)",
+          "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "length": 50,
           "mappedType": "string"
         }
       },

@@ -1,14 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { GrpackBundleService } from './grpack-bundle.service';
 import { CreateGrpackBundleDto } from './dto/create-grpack-bundle.dto';
 import { UpdateGrpackBundleDto } from './dto/update-grpack-bundle.dto';
+import { GrpackBundle } from './entities/grpack-bundle.entity';
+import { EntityManager } from '@mikro-orm/postgresql';
 
 @Controller('grpack-bundle')
 export class GrpackBundleController {
-  constructor(private readonly grpackBundleService: GrpackBundleService) {}
+  constructor(
+    private readonly grpackBundleService: GrpackBundleService,
+    private readonly em: EntityManager,
+  ) {}
 
   @Post()
   create(@Body() createGrpackBundleDto: CreateGrpackBundleDto) {
+    const grpackBundle = new GrpackBundle();
+    grpackBundle.name = createGrpackBundleDto.name;
+
+    //grpackBundle.grpacks.add;
+
     return this.grpackBundleService.create(createGrpackBundleDto);
   }
 
@@ -23,7 +41,10 @@ export class GrpackBundleController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateGrpackBundleDto: UpdateGrpackBundleDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateGrpackBundleDto: UpdateGrpackBundleDto,
+  ) {
     return this.grpackBundleService.update(+id, updateGrpackBundleDto);
   }
 

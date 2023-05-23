@@ -41,8 +41,13 @@ export class GrpackService {
     return `This action updates a #${id} grpack`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} grpack`;
+  async remove(id: string) {
+    try {
+      const grpack = await this.em.findOneOrFail(Grpack, { name: id });
+      this.em.removeAndFlush(grpack);
+    } catch (err: unknown) {
+      throw err;
+    }
   }
 
   async addPackage(id: string, createPackageDto: CreatePackageDto) {

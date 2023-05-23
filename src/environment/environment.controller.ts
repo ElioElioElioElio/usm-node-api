@@ -39,7 +39,7 @@ export class EnvironmentController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.environmentService.findOne(+id);
+    return this.environmentService.findOne(id);
   }
 
   @Patch(':id')

@@ -1,7 +1,9 @@
-import { Entity, PrimaryKey } from '@mikro-orm/core';
+import { Entity, PrimaryKey, PrimaryKeyType } from '@mikro-orm/core';
 
 @Entity({ abstract: true })
 export abstract class Component {
-  @PrimaryKey({ length: 50 })
+  @PrimaryKey({ type: 'string', length: 50 })
   name!: string;
+
+  [PrimaryKeyType]?: string;
 }

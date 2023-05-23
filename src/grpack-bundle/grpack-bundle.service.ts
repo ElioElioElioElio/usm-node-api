@@ -1,10 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { CreateGrpackBundleDto } from './dto/create-grpack-bundle.dto';
 import { UpdateGrpackBundleDto } from './dto/update-grpack-bundle.dto';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { GrpackBundle } from './entities/grpack-bundle.entity';
+import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
+import { Grpack } from '../grpack/entities/grpack.entity';
+import { Reference } from '@mikro-orm/core';
+import { EnvironmentService } from '../environment/environment.service';
 
 @Injectable()
 export class GrpackBundleService {
-  create(createGrpackBundleDto: CreateGrpackBundleDto) {
+  constructor(
+    @InjectRepository(GrpackBundle)
+    private readonly grpackBundleRepository: EntityRepository<GrpackBundle>,
+    private readonly em: EntityManager,
+    private readonly envService: EnvironmentService,
+  ) {}
+
+  async create(createGrpackBundleDto: CreateGrpackBundleDto) {
+    try {
+      const grpackBundle = new GrpackBundle();
+      grpackBundle.name = createGrpackBundleDto.name;
+
+      //Populate grpacks of the bundle with reference of grpack
+      createGrpackBundleDto.grpacks
+        .map((grpackName) => this.getRefGrpackFromId(grpackName))
+        .forEach((element) => {
+          grpackBundle.grpacks.add(element);
+        });
+
+      grpackBundle.environment = await this.envService.findOne(
+        createGrpackBundleDto.environment,
+      );
+
+      this.em.persistAndFlush(grpackBundle);
+
+      //
+    } catch (err: unknown) {
+      throw err;
+    }
+
     return 'This action adds a new grpackBundle';
   }
 
@@ -22,5 +57,10 @@ export class GrpackBundleService {
 
   remove(id: number) {
     return `This action removes a #${id} grpackBundle`;
+  }
+
+  private getRefGrpackFromId(grpackName: string): Reference<Grpack> {
+    const repo = this.em.getRepository(Grpack);
+    return repo.getReference(grpackName, { wrapped: true });
   }
 }
