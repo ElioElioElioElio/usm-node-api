@@ -1,5 +1,6 @@
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { Component, ComponentType } from '../entities/component.entity';
+import { FilterQuery, FindOptions } from '@mikro-orm/core';
 
 export abstract class EntityService<T extends Component> {
   readonly repository: EntityRepository<T>;
@@ -11,17 +12,24 @@ export abstract class EntityService<T extends Component> {
   }
 
   findAll() {
-    return this.repository.findAll();
+    return this.repository.findAll({
+      populate: true,
+    });
   }
 
-  async findByName(whereClause: any) {
-    const truc = this.repository.findAll();
-    return this.repository.findOneOrFail(whereClause);
-  }
-
-  async removeByName(name: any) {
+  findBy(filterQuery: FilterQuery<T>) {
     try {
-      const entity = await this.findByName(name);
+      return this.repository.findOneOrFail(filterQuery, {
+        populate: true,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async removeBy(filterQuery: FilterQuery<T>) {
+    try {
+      const entity = await this.findBy(filterQuery);
       this.em.removeAndFlush(entity);
     } catch (err: unknown) {
       throw err;

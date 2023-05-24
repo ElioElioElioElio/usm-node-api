@@ -19,7 +19,7 @@ export class NodeController {
   @Post()
   @ApiBody({ type: CreateNodeDto })
   create(@Body() createNodeDto: CreateNodeDto) {
-    return this.nodeService.create(createNodeDto);
+    return 'circuler ya rien à voir';
   }
 
   @Get()
@@ -29,7 +29,7 @@ export class NodeController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.nodeService.findOne(id);
+    return this.nodeService.findBy({ name: id });
   }
 
   @Patch(':id')

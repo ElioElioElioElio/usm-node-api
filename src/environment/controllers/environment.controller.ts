@@ -9,11 +9,13 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { EnvironmentService } from './environment.service';
-import { CreateEnvironmentDto } from './dto/create-environment.dto';
-import { UpdateEnvironmentDto } from './dto/update-environment.dto';
+import { EnvironmentService } from '../environment.service';
+import { CreateEnvironmentDto } from '../dto/environments/create-environment.dto';
 import { UniqueConstraintViolationException } from '@mikro-orm/core';
+import { ApiTags } from '@nestjs/swagger';
+import { UpdateEnvironmentDto } from '../dto/environments/update-environment.dto';
 
+@ApiTags('environment')
 @Controller('environment')
 export class EnvironmentController {
   constructor(private readonly environmentService: EnvironmentService) {}
@@ -33,30 +35,25 @@ export class EnvironmentController {
   }
 
   @Get()
-  findAll() {
-    return this.environmentService.findAll();
+  async findAll() {
+    return await this.environmentService.findAll();
   }
 
-  @Get(':id')
+  @Get(':idEnv')
   findOne(@Param('id') id: string) {
-    return this.environmentService.findOne(id);
+    return this.environmentService.findBy({ name: id });
   }
 
-  @Patch(':id')
+  @Patch(':idEnv')
   update(
     @Param('id') id: string,
     @Body() updateEnvironmentDto: UpdateEnvironmentDto,
   ) {
-    return this.environmentService.update(+id, updateEnvironmentDto);
+    return this.environmentService.update(id, updateEnvironmentDto);
   }
 
-  @Delete(':id')
+  @Delete(':idEnv')
   remove(@Param('id') id: string) {
-    return this.environmentService.remove(+id);
-  }
-
-  @Get(':id/nodes')
-  findNodes(@Param('id') id: string) {
-    return this.environmentService.findNodesByEnv(id);
+    return this.environmentService.removeBy({ name: id });
   }
 }

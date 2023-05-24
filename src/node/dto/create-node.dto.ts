@@ -7,11 +7,6 @@ export class CreateNodeDto {
   @IsString()
   name!: string;
 
-  @ApiProperty({ required: true })
-  @IsNotEmpty()
-  @IsString()
-  environment!: string;
-
   @ApiProperty({ required: false })
   @IsArray()
   @IsOptional()

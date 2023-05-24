@@ -21,13 +21,13 @@ export class NodeGroupController {
   }
 
   @Get()
-  findAll() {
-    return this.nodeGroupService.findAll();
+  async findAll() {
+    return await this.nodeGroupService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.nodeGroupService.findByName(id);
+    return this.nodeGroupService.findBy({ name: id });
   }
 
   @Patch(':id')
@@ -40,6 +40,6 @@ export class NodeGroupController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.nodeGroupService.removeByName(id);
+    return this.nodeGroupService.removeBy({ name: id });
   }
 }

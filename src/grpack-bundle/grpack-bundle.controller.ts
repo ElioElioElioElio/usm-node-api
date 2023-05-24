@@ -22,11 +22,6 @@ export class GrpackBundleController {
 
   @Post()
   create(@Body() createGrpackBundleDto: CreateGrpackBundleDto) {
-    const grpackBundle = new GrpackBundle();
-    grpackBundle.name = createGrpackBundleDto.name;
-
-    //grpackBundle.grpacks.add;
-
     return this.grpackBundleService.create(createGrpackBundleDto);
   }
 

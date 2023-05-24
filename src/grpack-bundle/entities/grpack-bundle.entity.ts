@@ -22,5 +22,5 @@ export class GrpackBundle {
   grpacks? = new Collection<Grpack>(this);
 
   @ManyToOne()
-  grpackBundled: GrpackBundle;
+  grpackBundled?: GrpackBundle;
 }

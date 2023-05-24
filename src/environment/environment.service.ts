@@ -1,50 +1,47 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { CreateEnvironmentDto } from './dto/create-environment.dto';
-import { UpdateEnvironmentDto } from './dto/update-environment.dto';
+import { Injectable } from '@nestjs/common';
+import { CreateEnvironmentDto } from './dto/environments/create-environment.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Environment } from './entities/environment.entity';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
-import { UniqueConstraintViolationException } from '@mikro-orm/core';
+import { EntityService } from '../shared/services/entity.service';
+import { UpdateEnvironmentDto } from './dto/environments/update-environment.dto';
 
 @Injectable()
-export class EnvironmentService {
+export class EnvironmentService extends EntityService<Environment> {
   constructor(
-    private readonly em: EntityManager,
     @InjectRepository(Environment)
-    private readonly environmentRepository: EntityRepository<Environment>,
-  ) {}
+    envRepo: EntityRepository<Environment>,
+    em: EntityManager,
+  ) {
+    super(envRepo, em);
+  }
 
-  async create(createEnvironmentDto: CreateEnvironmentDto) {
-    /*
-    try {
-      const env = this.environmentRepository.create(createEnvironmentDto);
-      await this.em.persistAndFlush(env);
-      return env;
-    } catch (error: unknown) {
-      throw error;
-    }*/
+  create(dto: CreateEnvironmentDto) {
+    const env = new Environment();
+    env.name = dto.name;
+    this.em.persistAndFlush(env);
+  }
+
+  update(id: string, dto: UpdateEnvironmentDto) {
+    throw new Error('Method not implemented.');
   }
 
   findAll() {
-    return this.environmentRepository.findAll({
-      populate: ['nodes', 'nodeGroups', 'grpackBundle'],
+    return this.repository.findAll({
+      populate: [
+        'nodes',
+        'nodeGroups',
+        'nodeGroups.nodes',
+        'nodeGroups.grpacks',
+        'grpackBundle',
+        'grpackBundle.grpackBundled',
+        'grpackBundle.grpacks',
+        'nodes.grpacks',
+      ],
     });
   }
 
-  async findOne(id: string) {
-    return await this.environmentRepository.findOneOrFail({ name: id });
-  }
-
-  update(id: number, updateEnvironmentDto: UpdateEnvironmentDto) {
-    return `This action updates a #${id} environment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} environment`;
-  }
-
-  async findNodesByEnv(envId: string) {
-    //return 'Tiens voilà les nodes';
-    return (await this.environmentRepository.findOne({ name: envId })).nodes;
+  findNodesByEnv(id: string) {
+    throw new Error('Method not implemented.');
   }
 }

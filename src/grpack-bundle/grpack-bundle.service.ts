@@ -21,17 +21,25 @@ export class GrpackBundleService {
     try {
       const grpackBundle = new GrpackBundle();
       grpackBundle.name = createGrpackBundleDto.name;
+      grpackBundle.environment = await this.envService.findBy({
+        name: createGrpackBundleDto.environment,
+      });
 
       //Populate grpacks of the bundle with reference of grpack
-      createGrpackBundleDto.grpacks
-        .map((grpackName) => this.getRefGrpackFromId(grpackName))
-        .forEach((element) => {
-          grpackBundle.grpacks.add(element);
-        });
+      if (!!createGrpackBundleDto.grpacks) {
+        createGrpackBundleDto.grpacks
+          .map((grpackName) => this.getRefGrpackFromId(grpackName))
+          .forEach((element) => {
+            grpackBundle.grpacks.add(element);
+          });
+      }
 
-      grpackBundle.environment = await this.envService.findOne(
-        createGrpackBundleDto.environment,
-      );
+      if (!!createGrpackBundleDto.grpackBundle) {
+        grpackBundle.grpackBundled =
+          await this.grpackBundleRepository.findOneOrFail({
+            name: createGrpackBundleDto.grpackBundle,
+          });
+      }
 
       this.em.persistAndFlush(grpackBundle);
 

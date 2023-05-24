@@ -90,7 +90,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 50,
           "mappedType": "string"
         }
@@ -132,6 +132,7 @@
             "name"
           ],
           "referencedTableName": "public.grpack_bundle",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       }
@@ -224,6 +225,16 @@
           "nullable": true,
           "length": 50,
           "mappedType": "string"
+        },
+        "grpack_bundle_name": {
+          "name": "grpack_bundle_name",
+          "type": "varchar(50)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 50,
+          "mappedType": "string"
         }
       },
       "name": "node_group",
@@ -251,6 +262,18 @@
             "name"
           ],
           "referencedTableName": "public.environment",
+          "deleteRule": "cascade"
+        },
+        "node_group_grpack_bundle_name_foreign": {
+          "constraintName": "node_group_grpack_bundle_name_foreign",
+          "columnNames": [
+            "grpack_bundle_name"
+          ],
+          "localTableName": "public.node_group",
+          "referencedColumnNames": [
+            "name"
+          ],
+          "referencedTableName": "public.grpack_bundle",
           "deleteRule": "cascade"
         }
       }
@@ -354,13 +377,13 @@
           "length": 50,
           "mappedType": "string"
         },
-        "grpack_bundled_name": {
-          "name": "grpack_bundled_name",
+        "grpack_bundle_name": {
+          "name": "grpack_bundle_name",
           "type": "varchar(50)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 50,
           "mappedType": "string"
         }
@@ -404,16 +427,17 @@
           "referencedTableName": "public.node_group",
           "deleteRule": "cascade"
         },
-        "node_grpack_bundled_name_foreign": {
-          "constraintName": "node_grpack_bundled_name_foreign",
+        "node_grpack_bundle_name_foreign": {
+          "constraintName": "node_grpack_bundle_name_foreign",
           "columnNames": [
-            "grpack_bundled_name"
+            "grpack_bundle_name"
           ],
           "localTableName": "public.node",
           "referencedColumnNames": [
             "name"
           ],
           "referencedTableName": "public.grpack_bundle",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       }

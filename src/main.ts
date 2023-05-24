@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { EnvironmentModule } from './environment/environment.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { snapshot: true });
@@ -15,6 +16,16 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('doc', app, document);
+
+  const envSwaggerConfig = new DocumentBuilder()
+    .setTitle('USM API : Environment Endpoint')
+    .setDescription('Environment Endpoint Documentation')
+    .setVersion('1.0')
+    .build();
+  const envDoument = SwaggerModule.createDocument(app, envSwaggerConfig, {
+    include: [EnvironmentModule],
+  });
+  SwaggerModule.setup('doc/env', app, envDoument);
 
   await app.listen(3000);
 }
