@@ -27,6 +27,8 @@ async function bootstrap() {
   });
   SwaggerModule.setup('doc/env', app, envDoument);
 
+  console.log(process.env.NODE_ENV);
+
   await app.listen(3000);
 }
 bootstrap();

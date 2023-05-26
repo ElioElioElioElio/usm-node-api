@@ -40,8 +40,4 @@ export class EnvironmentService extends EntityService<Environment> {
       ],
     });
   }
-
-  findNodesByEnv(id: string) {
-    throw new Error('Method not implemented.');
-  }
 }
