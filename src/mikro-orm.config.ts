@@ -15,4 +15,5 @@ export default defineConfig({
     path: path.join(__dirname, './migrations'),
     glob: '!(*.d).{js,ts}',
   },
+  validate: true,
 });

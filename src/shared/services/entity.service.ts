@@ -1,6 +1,6 @@
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
-import { Component, ComponentType } from '../entities/component.entity';
-import { FilterQuery, FindOptions } from '@mikro-orm/core';
+import { Component } from '../entities/component.entity';
+import { FilterQuery } from '@mikro-orm/core';
 
 export abstract class EntityService<T extends Component> {
   readonly repository: EntityRepository<T>;
