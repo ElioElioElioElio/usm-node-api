@@ -14,13 +14,9 @@ export class PackageDataService {
   ) {}
 
   async create(createPackageDataDto: CreatePackageDataDto) {
-    try {
-      const pckgData = this.packageDataRepository.create(createPackageDataDto);
-      await this.em.persistAndFlush(pckgData);
-      return pckgData;
-    } catch (err: unknown) {
-      throw err;
-    }
+    const pckgData = this.packageDataRepository.create(createPackageDataDto);
+    await this.em.persistAndFlush(pckgData);
+    return pckgData;
   }
 
   findAll() {

@@ -14,13 +14,9 @@ export class OsService {
   ) {}
 
   async create(createOsDto: CreateOsDto) {
-    try {
-      const os = this.osRepository.create(createOsDto);
-      await this.em.persistAndFlush(os);
-      return os;
-    } catch (err: unknown) {
-      throw err;
-    }
+    const os = this.osRepository.create(createOsDto);
+    await this.em.persistAndFlush(os);
+    return os;
   }
 
   async findAll() {

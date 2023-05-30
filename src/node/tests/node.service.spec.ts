@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GrpackService } from './services/grpack.service';
+import { NodeService } from '../node.service';
 
-describe('GrpackService', () => {
-  let service: GrpackService;
+describe('NodeService', () => {
+  let service: NodeService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GrpackService],
+      providers: [NodeService],
     }).compile();
 
-    service = module.get<GrpackService>(GrpackService);
+    service = module.get<NodeService>(NodeService);
   });
 
   it('should be defined', () => {

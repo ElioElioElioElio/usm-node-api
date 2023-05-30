@@ -18,35 +18,29 @@ export class GrpackBundleService {
   ) {}
 
   async create(createGrpackBundleDto: CreateGrpackBundleDto) {
-    try {
-      const grpackBundle = new GrpackBundle();
-      grpackBundle.name = createGrpackBundleDto.name;
-      grpackBundle.environment = await this.envService.findBy({
-        name: createGrpackBundleDto.environment,
-      });
+    const grpackBundle = new GrpackBundle();
+    grpackBundle.name = createGrpackBundleDto.name;
+    grpackBundle.environment = await this.envService.findOneBy({
+      name: createGrpackBundleDto.environment,
+    });
 
-      //Populate grpacks of the bundle with reference of grpack
-      if (!!createGrpackBundleDto.grpacks) {
-        createGrpackBundleDto.grpacks
-          .map((grpackName) => this.getRefGrpackFromId(grpackName))
-          .forEach((element) => {
-            grpackBundle.grpacks.add(element);
-          });
-      }
-
-      if (!!createGrpackBundleDto.grpackBundle) {
-        grpackBundle.grpackBundled =
-          await this.grpackBundleRepository.findOneOrFail({
-            name: createGrpackBundleDto.grpackBundle,
-          });
-      }
-
-      this.em.persistAndFlush(grpackBundle);
-
-      //
-    } catch (err: unknown) {
-      throw err;
+    //Populate grpacks of the bundle with reference of grpack
+    if (!!createGrpackBundleDto.grpacks) {
+      createGrpackBundleDto.grpacks
+        .map((grpackName) => this.getRefGrpackFromId(grpackName))
+        .forEach((element) => {
+          grpackBundle.grpacks.add(element);
+        });
     }
+
+    if (!!createGrpackBundleDto.grpackBundle) {
+      grpackBundle.grpackBundled =
+        await this.grpackBundleRepository.findOneOrFail({
+          name: createGrpackBundleDto.grpackBundle,
+        });
+    }
+
+    this.em.persistAndFlush(grpackBundle);
 
     return 'This action adds a new grpackBundle';
   }

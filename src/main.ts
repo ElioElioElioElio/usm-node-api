@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { EnvironmentModule } from './environment/environment.module';
+import { UniqueConstraintViolationExceptionFilter } from './shared/exception-filters/unique-constraint-violation.exception-filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { snapshot: true });
@@ -26,8 +27,6 @@ async function bootstrap() {
     include: [EnvironmentModule],
   });
   SwaggerModule.setup('doc/env', app, envDoument);
-
-  console.log(process.env.NODE_ENV);
 
   await app.listen(3000);
 }

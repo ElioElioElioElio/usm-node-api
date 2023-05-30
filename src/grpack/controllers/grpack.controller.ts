@@ -6,14 +6,11 @@ import {
   Patch,
   Param,
   Delete,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { GrpackService } from '../services/grpack.service';
 import { UpdateGrpackDto } from '../dto/grpack/update-grpack.dto';
 import { CreateGrpackDto } from '../dto/grpack/create-grpack.dto';
 import { CreatePackageDto } from '../dto/package/create-package.dto';
-import { NotFoundError } from '@mikro-orm/core';
 
 @Controller('grpack')
 export class GrpackController {
@@ -41,16 +38,7 @@ export class GrpackController {
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    try {
-      return await this.grpackService.remove(id);
-    } catch (err: unknown) {
-      if (err instanceof NotFoundError) {
-        throw new HttpException(
-          "grpack named '" + id + "' not found",
-          HttpStatus.NOT_FOUND,
-        );
-      }
-    }
+    return await this.grpackService.remove(id);
   }
 
   @Post(':id/package')

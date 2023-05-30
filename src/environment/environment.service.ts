@@ -16,14 +16,16 @@ export class EnvironmentService extends EntityService<Environment> {
     super(envRepo, em);
   }
 
-  create(dto: CreateEnvironmentDto) {
+  async create(dto: CreateEnvironmentDto) {
     const env = new Environment();
     env.name = dto.name;
-    this.em.persistAndFlush(env);
+    await this.em.persistAndFlush(env);
   }
 
-  update(id: string, dto: UpdateEnvironmentDto) {
-    throw new Error('Method not implemented.');
+  async update(id: string, dto: UpdateEnvironmentDto) {
+    const env = await this.findOneBy({ name: id });
+    env.name = dto.name;
+    await this.em.persistAndFlush(env);
   }
 
   findAll() {
@@ -39,5 +41,6 @@ export class EnvironmentService extends EntityService<Environment> {
         'nodes.grpacks',
       ],
     });
+    this.repository.find;
   }
 }

@@ -6,58 +6,63 @@ import {
   Patch,
   Param,
   Delete,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
-import { UniqueConstraintViolationException } from '@mikro-orm/core';
 import { ApiTags } from '@nestjs/swagger';
-import { UpdateEnvironmentDto } from '../dto/environments/update-environment.dto';
 import { NodeService } from '../../node/node.service';
 import { CreateNodeDto } from '../../node/dto/create-node.dto';
 import { UpdateNodeDto } from '../../node/dto/update-node.dto';
+import { EnvironmentService } from '../environment.service';
 
 @ApiTags('nodes')
-@Controller('environment')
+@Controller('environment/:idEnv')
 export class NodeController {
-  constructor(private readonly nodeService: NodeService) {}
+  constructor(
+    private readonly nodeService: NodeService,
+    private readonly environmentService: EnvironmentService,
+  ) {}
 
-  @Post(':idEnv/nodes/')
+  @Post('nodes/')
   create(
     @Param('idEnv') idEnv: string,
     @Body() createEnvironmentDto: CreateNodeDto,
   ) {
-    try {
-      return this.nodeService.create(idEnv, createEnvironmentDto);
-    } catch (err: unknown) {
-      if (err instanceof UniqueConstraintViolationException) {
-        throw new HttpException(
-          'environment name already existing',
-          HttpStatus.CONFLICT,
-        );
-      }
-    }
+    return this.nodeService.create(idEnv, createEnvironmentDto);
   }
 
-  @Get(':idEnv/nodes/')
+  @Get('nodes/')
   async findAll(@Param('idEnv') idEnv: string) {
-    return await this.nodeService.findBy({ environment: idEnv });
+    const env = await this.environmentService.findOneBy({ name: idEnv });
+    return env.nodes;
   }
 
-  @Get(':idEnv/nodes/:idNode')
-  findOne(@Param('id') id: string) {
-    return this.nodeService.findBy({ name: id });
+  @Get('nodes/:idNode')
+  async findOne(
+    @Param('idEnv') idEnv: string,
+    @Param('idNode') idNode: string,
+  ) {
+    /*
+    const env = await this.environmentService.findOneBy({ name: idEnv });
+    console.log(env);*/
+
+    return await this.nodeService.findOneBy({
+      name: idNode,
+      environment: await this.environmentService.findOneBy({ name: idEnv }),
+    });
+
+    //return this.nodeService.findOneBy({ name: idNode });
   }
 
-  @Patch(':idEnv/nodes/:idNode')
+  @Patch('nodes/:idNode')
   update(
+    @Param('idEnv') idEnv: string,
     @Param('idNode') idNode: string,
     @Body() updateEnvironmentDto: UpdateNodeDto,
   ) {
     return this.nodeService.update(idNode, updateEnvironmentDto);
   }
 
-  @Delete(':idEnv/nodes/:idNode')
-  remove(@Param('id') id: string) {
-    return this.nodeService.removeBy({ name: id });
+  @Delete('nodes/:idNode')
+  remove(@Param('idEnv') idEnv: string, @Param('idNode') idNode: string) {
+    return this.nodeService.removeBy({ name: idNode });
   }
 }

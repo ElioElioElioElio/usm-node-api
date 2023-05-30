@@ -23,46 +23,42 @@ export class NodeGroupService extends EntityService<NodeGroup> {
   }
 
   async create(createNodeGroupDto: CreateNodeGroupDto) {
-    try {
-      const nodeGrp = new NodeGroup();
-      //Populate name
-      nodeGrp.name = createNodeGroupDto.name;
+    const nodeGrp = new NodeGroup();
+    //Populate name
+    nodeGrp.name = createNodeGroupDto.name;
 
-      //Populate environment
-      nodeGrp.environment = await this.envService.findBy({
-        name: createNodeGroupDto.environment,
-      });
+    //Populate environment
+    nodeGrp.environment = await this.envService.findOneBy({
+      name: createNodeGroupDto.environment,
+    });
 
-      //Populate grpacks included via mikroorm refs if exists
-      if (!!createNodeGroupDto.grpacks) {
-        createNodeGroupDto.grpacks
-          .map((grpackName) => this.getRefGrpackFromId(grpackName))
-          .forEach((element) => {
-            nodeGrp.grpacks.add(element);
-          });
-      }
-
-      //Populate nodes included via mikroorm refs if exists
-      if (!!createNodeGroupDto.nodes) {
-        createNodeGroupDto.nodes
-          .map((nodeName) => this.getRefNodeFromId(nodeName))
-          .forEach((element) => {
-            nodeGrp.nodes.add(element);
-          });
-      }
-
-      //Populate grpackBundle if exists
-      if (!!createNodeGroupDto.grpackBundle) {
-        nodeGrp.grpackBundle = await this.grpackBundleService.findOne(
-          createNodeGroupDto.grpackBundle,
-        );
-      }
-
-      //Persist creation
-      this.em.persistAndFlush(nodeGrp);
-    } catch (err) {
-      throw err;
+    //Populate grpacks included via mikroorm refs if exists
+    if (!!createNodeGroupDto.grpacks) {
+      createNodeGroupDto.grpacks
+        .map((grpackName) => this.getRefGrpackFromId(grpackName))
+        .forEach((element) => {
+          nodeGrp.grpacks.add(element);
+        });
     }
+
+    //Populate nodes included via mikroorm refs if exists
+    if (!!createNodeGroupDto.nodes) {
+      createNodeGroupDto.nodes
+        .map((nodeName) => this.getRefNodeFromId(nodeName))
+        .forEach((element) => {
+          nodeGrp.nodes.add(element);
+        });
+    }
+
+    //Populate grpackBundle if exists
+    if (!!createNodeGroupDto.grpackBundle) {
+      nodeGrp.grpackBundle = await this.grpackBundleService.findOne(
+        createNodeGroupDto.grpackBundle,
+      );
+    }
+
+    //Persist creation
+    this.em.persistAndFlush(nodeGrp);
   }
 
   update(id: string, updateNodeGroupDto: UpdateNodeGroupDto) {

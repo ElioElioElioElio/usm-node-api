@@ -27,7 +27,7 @@ export class NodeGroupController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.nodeGroupService.findBy({ name: id });
+    return this.nodeGroupService.findOneBy({ name: id });
   }
 
   @Patch(':id')

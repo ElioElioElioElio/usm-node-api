@@ -26,52 +26,75 @@ export class NodeService extends EntityService<Node> {
   }
 
   async create(environmentName: string, createNodeDto: CreateNodeDto) {
-    try {
-      const node = new Node();
+    const node = new Node();
 
-      //Populate name
-      node.name = createNodeDto.name;
+    //Populate name
+    node.name = createNodeDto.name;
 
-      //Populate environment
-      node.environment = await this.envService.findBy({
-        name: environmentName,
-      });
+    //Populate environment
+    node.environment = await this.envService.findOneBy({
+      name: environmentName,
+    });
 
-      //Populate grpacks included via mikroorm refs if exists
-      if (!!createNodeDto.grpacks) {
-        createNodeDto.grpacks
-          .map((grpackName) => this.getRefGrpackFromId(grpackName))
-          .forEach((element) => {
-            node.grpacks.add(element);
-          });
-      }
-      //Populate nodeGroup if exists
-      if (!!createNodeDto.nodeGroup) {
-        node.nodeGroup = await this.nodeGroupService.findBy({
-          name: createNodeDto.nodeGroup,
+    //Populate grpacks included via mikroorm refs if exists
+    if (!!createNodeDto.grpacks) {
+      createNodeDto.grpacks
+        .map((grpackName) => this.getRefGrpackFromId(grpackName))
+        .forEach((element) => {
+          node.grpacks.add(element);
         });
-      }
-
-      //Populate grpackBundle if exists
-      if (!!createNodeDto.grpackBundle) {
-        node.grpackBundle = await this.grpackBundleService.findOne(
-          createNodeDto.grpackBundle,
-        );
-      }
-
-      //Persist creation
-      this.em.persistAndFlush(node);
-    } catch (err: unknown) {
-      throw err;
     }
+    //Populate nodeGroup if exists
+    if (!!createNodeDto.nodeGroup) {
+      node.nodeGroup = await this.nodeGroupService.findOneBy({
+        name: createNodeDto.nodeGroup,
+      });
+    }
+
+    //Populate grpackBundle if exists
+    if (!!createNodeDto.grpackBundle) {
+      node.grpackBundle = await this.grpackBundleService.findOne(
+        createNodeDto.grpackBundle,
+      );
+    }
+
+    //Persist creation
+    this.em.persistAndFlush(node);
   }
 
-  update(id: string, updateNodeDto: UpdateNodeDto) {
-    return `This action updates a #${id} node`;
-  }
+  async update(id: string, updateNodeDto: UpdateNodeDto) {
+    const node = await this.findOneBy({ name: id });
 
-  remove(id: string) {
-    return `This action removes a #${id} node`;
+    //Populate name if exists
+    if (!!this.update.name) {
+      node.name = updateNodeDto.name;
+    }
+
+    //Populate grpacks included via mikroorm refs if exists
+    if (!!updateNodeDto.grpacks) {
+      updateNodeDto.grpacks
+        .map((grpackName) => this.getRefGrpackFromId(grpackName))
+        .forEach((element) => {
+          node.grpacks.add(element);
+        });
+    }
+
+    //Populate nodeGroup if exists
+    if (!!updateNodeDto.nodeGroup) {
+      node.nodeGroup = await this.nodeGroupService.findOneBy({
+        name: updateNodeDto.nodeGroup,
+      });
+    }
+
+    //Populate grpackBundle if exists
+    if (!!updateNodeDto.grpackBundle) {
+      node.grpackBundle = await this.grpackBundleService.findOne(
+        updateNodeDto.grpackBundle,
+      );
+    }
+
+    //Persist creation
+    this.em.persistAndFlush(node);
   }
 
   private getRefGrpackFromId(grpackName: string): Reference<Grpack> {

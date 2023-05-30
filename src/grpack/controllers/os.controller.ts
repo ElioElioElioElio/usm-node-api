@@ -3,15 +3,13 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Patch,
   Post,
 } from '@nestjs/common';
 import { OsService } from '../services/os.service';
 import { CreateOsDto } from '../dto/os/create-os.dto';
-import { UniqueConstraintViolationException, serialize } from '@mikro-orm/core';
+import { serialize } from '@mikro-orm/core';
 import { UpdateOsDto } from '../dto/os/update-os.dto';
 
 @Controller('os')
@@ -20,13 +18,7 @@ export class OsController {
 
   @Post()
   async create(@Body() createOsDto: CreateOsDto) {
-    try {
-      return serialize(await this.osService.create(createOsDto));
-    } catch (err: unknown) {
-      if (err instanceof UniqueConstraintViolationException) {
-        throw new HttpException('duplicate os', HttpStatus.CONFLICT);
-      }
-    }
+    return serialize(await this.osService.create(createOsDto));
   }
 
   @Get()

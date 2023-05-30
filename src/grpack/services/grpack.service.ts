@@ -20,13 +20,9 @@ export class GrpackService {
   ) {}
 
   async create(createGrpackDto: CreateGrpackDto) {
-    try {
-      const grpack = this.grpackRepository.create(createGrpackDto);
-      await this.em.persistAndFlush(grpack);
-      return grpack;
-    } catch (error: unknown) {
-      throw error;
-    }
+    const grpack = this.grpackRepository.create(createGrpackDto);
+    await this.em.persistAndFlush(grpack);
+    return grpack;
   }
 
   findAll() {
@@ -42,12 +38,8 @@ export class GrpackService {
   }
 
   async remove(id: string) {
-    try {
-      const grpack = await this.em.findOneOrFail(Grpack, { name: id });
-      this.em.removeAndFlush(grpack);
-    } catch (err: unknown) {
-      throw err;
-    }
+    const grpack = await this.em.findOneOrFail(Grpack, { name: id });
+    this.em.removeAndFlush(grpack);
   }
 
   async addPackage(id: string, createPackageDto: CreatePackageDto) {

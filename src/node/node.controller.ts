@@ -29,7 +29,7 @@ export class NodeController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.nodeService.findBy({ name: id });
+    return this.nodeService.findOneBy({ name: id });
   }
 
   @Patch(':id')
@@ -39,6 +39,6 @@ export class NodeController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.nodeService.remove(id);
+    return this.nodeService.removeBy({ name: id });
   }
 }
