@@ -20,14 +20,10 @@ export class UniqueConstraintViolationExceptionFilter
     const status = HttpStatus.CONFLICT;
 
     const keysValues = this.extractDuplicatedKeyValue(exception);
-    console.log(keysValues);
-    console.log(exception.message);
 
     const ressourceName = this.cleanParenthesisAndQuotes(
       exception.message.match(/"(.*?)"/)[0],
     );
-
-    console.log(ressourceName);
 
     response.status(status).json({
       statusCode: status,

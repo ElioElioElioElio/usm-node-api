@@ -5,6 +5,7 @@ import { Environment } from './entities/environment.entity';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
 import { EntityService } from '../shared/services/entity.service';
 import { UpdateEnvironmentDto } from './dto/environments/update-environment.dto';
+import { FilterQuery, FindOptions, Loaded } from '@mikro-orm/core';
 
 @Injectable()
 export class EnvironmentService extends EntityService<Environment> {
@@ -20,27 +21,63 @@ export class EnvironmentService extends EntityService<Environment> {
     const env = new Environment();
     env.name = dto.name;
     await this.em.persistAndFlush(env);
+    return env;
   }
 
   async update(id: string, dto: UpdateEnvironmentDto) {
     const env = await this.findOneBy({ name: id });
-    env.name = dto.name;
-    await this.em.persistAndFlush(env);
+    if (!!dto.name) {
+      env.name = dto.name;
+      await this.em.persistAndFlush(env);
+    }
+    return env;
   }
 
-  findAll() {
-    return this.repository.findAll({
+  async findAll() {
+    const envs = await this.repository.findAll({
       populate: [
+        'bundles',
+        'bundles.bundle',
+        'bundles.grpacks',
+        'bundles.grpacks.package',
+        'bundles.grpacks.package.os',
         'nodes',
-        'nodeGroups',
-        'nodeGroups.nodes',
-        'nodeGroups.grpacks',
-        'grpackBundle',
-        'grpackBundle.grpackBundled',
-        'grpackBundle.grpacks',
+        'nodes.bundle',
         'nodes.grpacks',
+        'groups',
+        'groups.nodes',
+        'groups.bundle',
+        'groups.grpacks',
       ],
     });
-    this.repository.find;
+    envs.forEach(async (env) => {
+      await env.nodes.loadItems();
+      env.nodes.set(env.nodes.getItems().filter((node) => node.group === null));
+    });
+    return envs;
+  }
+
+  async findOneBy(
+    filterQuery: FilterQuery<Environment>,
+  ): Promise<Loaded<Environment, never>> {
+    const env = await this.repository.findOneOrFail(filterQuery, {
+      populate: [
+        'bundles',
+        'bundles.bundle',
+        'bundles.grpacks',
+        'bundles.grpacks.package',
+        'bundles.grpacks.package.os',
+        'nodes',
+        'nodes.bundle',
+        'nodes.grpacks',
+        'groups',
+        'groups.nodes',
+      ],
+    });
+
+    await env.nodes.loadItems();
+    env.nodes.set(env.nodes.getItems().filter((node) => node.group === null));
+
+    return env;
   }
 }

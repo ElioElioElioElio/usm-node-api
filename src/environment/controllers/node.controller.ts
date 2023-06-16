@@ -40,10 +40,6 @@ export class NodeController {
     @Param('idEnv') idEnv: string,
     @Param('idNode') idNode: string,
   ) {
-    /*
-    const env = await this.environmentService.findOneBy({ name: idEnv });
-    console.log(env);*/
-
     return await this.nodeService.findOneBy({
       name: idNode,
       environment: await this.environmentService.findOneBy({ name: idEnv }),

@@ -10,9 +10,10 @@ import {
 import { GrpackService } from '../services/grpack.service';
 import { UpdateGrpackDto } from '../dto/grpack/update-grpack.dto';
 import { CreateGrpackDto } from '../dto/grpack/create-grpack.dto';
-import { CreatePackageDto } from '../dto/package/create-package.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('grpack')
+@ApiTags('grpacks')
 export class GrpackController {
   constructor(private readonly grpackService: GrpackService) {}
 
@@ -28,21 +29,16 @@ export class GrpackController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.grpackService.findOne(+id);
+    return this.grpackService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGrpackDto: UpdateGrpackDto) {
-    return this.grpackService.update(+id, updateGrpackDto);
+    return this.grpackService.update(id, updateGrpackDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.grpackService.remove(id);
-  }
-
-  @Post(':id/package')
-  addPackage(@Param('id') id: string, @Body() packageDto: CreatePackageDto) {
-    return this.grpackService.addPackage(id, packageDto);
   }
 }

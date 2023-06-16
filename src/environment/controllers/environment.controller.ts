@@ -8,8 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { EnvironmentService } from '../environment.service';
-import { CreateEnvironmentDto } from '../dto/environments/create-environment.dto';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { CreateEnvironmentDto } from '../dto/environments/create-environment.dto';
 import { UpdateEnvironmentDto } from '../dto/environments/update-environment.dto';
 
 @ApiTags('environment')

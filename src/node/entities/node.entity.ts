@@ -8,20 +8,50 @@ import {
 import { Grpack } from '../../grpack/entities/grpack.entity';
 import { Environment } from '../../environment/entities/environment.entity';
 import { Component } from '../../shared/entities/component.entity';
-import { NodeGroup } from '../../node-group/entities/node-group.entity';
-import { GrpackBundle } from '../../grpack-bundle/entities/grpack-bundle.entity';
+import { Group } from '../../group/entities/group.entity';
+import { Bundle } from '../../bundle/entities/bundle.entity';
 
 @Entity()
 export class Node extends Component {
-  @ManyToOne({ cascade: [Cascade.REMOVE] })
+  @ManyToOne({
+    cascade: [Cascade.REMOVE],
+    serializer(env: Environment) {
+      return env.name;
+    },
+  })
   environment!: Environment;
 
-  @ManyToMany(() => Grpack)
+  @ManyToMany({
+    serializer(grpacks: Collection<Grpack>) {
+      /*
+      console.log('serialize: ');
+      console.log(value);
+      */
+      return grpacks.getItems().map((grpack) => {
+        return grpack.name;
+      });
+    },
+  })
   grpacks? = new Collection<Grpack>(this);
 
-  @ManyToOne({ cascade: [Cascade.REMOVE] })
-  nodeGroup?: NodeGroup;
+  @ManyToOne({
+    cascade: [Cascade.REMOVE],
+    serializer(group: Group) {
+      if (!!group) {
+        return group.name;
+      }
+      return null;
+    },
+  })
+  group?: Group;
 
-  @ManyToOne()
-  grpackBundle?: GrpackBundle;
+  @ManyToOne({
+    serializer(bundle: Bundle) {
+      if (!!bundle) {
+        return bundle.name;
+      }
+      return null;
+    },
+  })
+  bundle?: Bundle;
 }

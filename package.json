@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --watch --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@mikro-orm/cli": "^5.7.10",
@@ -26,6 +26,7 @@
     "@mikro-orm/nestjs": "^5.1.8",
     "@mikro-orm/postgresql": "^5.7.10",
     "@mikro-orm/reflection": "^5.7.10",
+    "@mikro-orm/seeder": "^5.7.10",
     "@nestjs/common": "^9.4.2",
     "@nestjs/core": "^9.4.2",
     "@nestjs/mapped-types": "*",

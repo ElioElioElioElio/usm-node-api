@@ -11,14 +11,16 @@ import { OsService } from '../services/os.service';
 import { CreateOsDto } from '../dto/os/create-os.dto';
 import { serialize } from '@mikro-orm/core';
 import { UpdateOsDto } from '../dto/os/update-os.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('os')
+@ApiTags('os')
 export class OsController {
   constructor(private readonly osService: OsService) {}
 
   @Post()
   async create(@Body() createOsDto: CreateOsDto) {
-    return serialize(await this.osService.create(createOsDto));
+    return await this.osService.create(createOsDto);
   }
 
   @Get()
@@ -26,9 +28,9 @@ export class OsController {
     return this.osService.findAll();
   }
 
-  @Get(':id/:version')
-  findOne(@Param('id') id: string, @Param('version') version: string) {
-    return this.osService.findOne(id, version);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.osService.findOne(id);
   }
 
   @Patch(':id')

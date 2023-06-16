@@ -4,18 +4,13 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { Grpack } from '../entities/grpack.entity';
 import { EntityRepository, EntityManager } from '@mikro-orm/postgresql';
 import { CreateGrpackDto } from '../dto/grpack/create-grpack.dto';
-import { CreatePackageDto } from '../dto/package/create-package.dto';
-import { Package } from '../entities/package.entity';
 import { OsService } from './os.service';
-import { PackageDataService } from './package-data.service';
 
 @Injectable()
 export class GrpackService {
   constructor(
     @InjectRepository(Grpack)
     private readonly grpackRepository: EntityRepository<Grpack>,
-    private readonly osService: OsService,
-    private readonly packageDataService: PackageDataService,
     private readonly em: EntityManager,
   ) {}
 
@@ -26,42 +21,30 @@ export class GrpackService {
   }
 
   findAll() {
-    return this.grpackRepository.findAll({ populate: ['package'] });
+    return this.grpackRepository.findAll({
+      populate: true,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} grpack`;
+  findOne(id: string) {
+    return this.grpackRepository.findOneOrFail(
+      { name: id },
+      { populate: true },
+    );
   }
 
-  update(id: number, updateGrpackDto: UpdateGrpackDto) {
-    return `This action updates a #${id} grpack`;
+  async update(id: string, updateGrpackDto: UpdateGrpackDto) {
+    const grpack = await this.findOne(id);
+
+    if (!!updateGrpackDto.name) {
+      grpack.name = updateGrpackDto.name;
+      this.em.persistAndFlush(grpack);
+    }
+    return grpack;
   }
 
   async remove(id: string) {
     const grpack = await this.em.findOneOrFail(Grpack, { name: id });
     this.em.removeAndFlush(grpack);
-  }
-
-  async addPackage(id: string, createPackageDto: CreatePackageDto) {
-    const grpack = await this.grpackRepository.findOneOrFail({ name: id });
-    const pckg = new Package();
-    pckg.grpack = grpack;
-
-    const os = await this.osService.findOne(
-      createPackageDto.os.osName,
-      createPackageDto.os.version,
-    );
-    pckg.os = os;
-
-    const packageData = await this.packageDataService.findOne(
-      createPackageDto.packageData.packageName,
-      createPackageDto.packageData.version,
-    );
-    pckg.packageData = packageData;
-
-    grpack.package.add(pckg);
-    this.em.persistAndFlush(grpack);
-
-    //grpack.package.
   }
 }

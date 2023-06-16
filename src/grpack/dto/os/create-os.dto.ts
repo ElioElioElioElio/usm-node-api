@@ -1,12 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateOsDto {
   @ApiProperty()
   @IsNotEmpty()
-  readonly osName: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  readonly version: string;
+  @IsString()
+  readonly osName!: string;
 }

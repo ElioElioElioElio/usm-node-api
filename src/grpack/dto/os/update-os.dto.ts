@@ -1,12 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+import { CreateOsDto } from './create-os.dto';
 
-export class UpdateOsDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  readonly osName: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  readonly version: string;
-}
+export class UpdateOsDto extends PartialType(CreateOsDto) {}

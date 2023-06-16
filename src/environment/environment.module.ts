@@ -6,31 +6,33 @@ import { Environment } from './entities/environment.entity';
 import { NodeController } from './controllers/node.controller';
 import { NodeModule } from '../node/node.module';
 import { NodeService } from '../node/node.service';
-import { NodeGroupModule } from '../node-group/node-group.module';
-import { NodeGroupService } from '../node-group/node-group.service';
-import { GrpackBundleModule } from '../grpack-bundle/grpack-bundle.module';
-import { GrpackBundleService } from '../grpack-bundle/grpack-bundle.service';
-import { NodeGroup } from '../node-group/entities/node-group.entity';
-import { GrpackBundle } from '../grpack-bundle/entities/grpack-bundle.entity';
+import { NodeGroupModule } from '../group/group.module';
+import { NodeGroupService } from '../group/group.service';
+import { BundleModule } from '../bundle/bundle.module';
+import { BundleService } from '../bundle/bundle.service';
+import { Group } from '../group/entities/group.entity';
+import { Bundle } from '../bundle/entities/bundle.entity';
 import { SharedModule } from '../shared/shared.module';
 import { Node } from '../node/entities/node.entity';
+import { GroupController } from './controllers/group.controller';
+import { BundleController } from './controllers/bundle.controller';
 
 @Module({
   imports: [
     MikroOrmModule.forFeature({
-      entities: [Environment, Node, NodeGroup, GrpackBundle],
+      entities: [Environment, Node, Group, Bundle],
     }),
     NodeModule,
     SharedModule,
     NodeGroupModule,
-    GrpackBundleModule,
+    BundleModule,
   ],
-  controllers: [EnvironmentController, NodeController],
-  providers: [
-    EnvironmentService,
-    NodeService,
-    NodeGroupService,
-    GrpackBundleService,
+  controllers: [
+    EnvironmentController,
+    NodeController,
+    GroupController,
+    BundleController,
   ],
+  providers: [EnvironmentService, NodeService, NodeGroupService, BundleService],
 })
 export class EnvironmentModule {}

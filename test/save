@@ -1,0 +1,316 @@
+describe('ENVIRONMENT E2E TESTS 2', () => {
+  let app: INestApplication;
+
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [
+        MikroOrmModule.forRoot({
+          type: 'postgresql',
+          host: 'localhost',
+          port: 5432,
+          user: 'postgres',
+          password: 'example',
+          dbName: 'testNodeUsmApi',
+          seeder: {
+            pathTs: '../src/seeders',
+            defaultSeeder: 'GrpackSeeder',
+            glob: '!(*.d).{js,ts}',
+            emit: 'ts',
+            fileName: (className: string) => className,
+          },
+          entities: ['dist/**/*.entity.js'],
+          entitiesTs: ['src/**/*.entity.ts'],
+          metadataProvider: TsMorphMetadataProvider,
+          migrations: {
+            path: path.join(__dirname, './migrations'),
+            glob: '!(*.d).{js,ts}',
+          },
+        }),
+        AppModule,
+      ],
+    }).compile();
+
+    const orm = await MikroORM.init<PostgreSqlDriver>({
+      type: 'postgresql',
+      host: 'localhost',
+      port: 5432,
+      user: 'postgres',
+      password: 'example',
+      dbName: 'testNodeUsmApi',
+      seeder: {
+        pathTs: '../src/seeders',
+        defaultSeeder: 'GrpackSeeder',
+        glob: '!(*.d).{js,ts}',
+        emit: 'ts',
+        fileName: (className: string) => className,
+      },
+      entities: ['dist/**/*.entity.js'],
+      entitiesTs: ['src/**/*.entity.ts'],
+      metadataProvider: TsMorphMetadataProvider,
+      migrations: {
+        path: path.join(__dirname, './migrations'),
+        glob: '!(*.d).{js,ts}',
+      },
+    });
+    await orm.getSchemaGenerator().refreshDatabase();
+
+    /*
+    const seeder = orm.getSeeder();
+    await seeder.seed(GrpackSeeder);
+    */
+
+    orm.close();
+
+    app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
+  });
+
+  afterEach(async () => {
+    // Close connection
+    app.close();
+  });
+
+  describe('/environment endpoint tests', () => {
+    const ENV_ENDPOINT = '/environment';
+
+    const createEnvironmentDto1 = {
+      name: 'environmentName1',
+    } as CreateEnvironmentDto;
+
+    let grpacks;
+
+    describe('CREATE', () => {
+      it('should create succesfuly a new environment', () => {
+        return request(app.getHttpServer())
+          .post(ENV_ENDPOINT)
+          .set('Accept', 'application/json')
+          .send(createEnvironmentDto1)
+          .expect(201)
+          .expect((response: request.Response) => {
+            const { name, nodes, groups, bundles } = response.body;
+
+            expect(typeof name).toBe('string');
+            expect(typeof nodes).toBe('object');
+            expect(typeof groups).toBe('object');
+            expect(typeof bundles).toBe('object');
+
+            expect(name).toEqual(createEnvironmentDto1.name);
+            expect(nodes).toEqual([]);
+            expect(groups).toEqual([]);
+            expect(bundles).toEqual([]);
+          });
+      });
+
+      it('should persist a created environment', async () => {
+        await request(app.getHttpServer())
+          .post(ENV_ENDPOINT)
+          .set('Accept', 'application/json')
+          .send(createEnvironmentDto1)
+          .expect(201)
+          .expect((response: request.Response) => {
+            const { name, nodes, groups, bundles } = response.body;
+
+            expect(typeof name).toBe('string');
+            expect(typeof nodes).toBe('object');
+            expect(typeof groups).toBe('object');
+            expect(typeof bundles).toBe('object');
+
+            expect(name).toEqual(createEnvironmentDto1.name);
+            expect(nodes).toEqual([]);
+            expect(groups).toEqual([]);
+            expect(bundles).toEqual([]);
+          });
+
+        return request(app.getHttpServer())
+          .get(ENV_ENDPOINT)
+          .set('Accept', 'application/json')
+          .send(createEnvironmentDto1)
+          .expect(200)
+          .expect((response: request.Response) => {
+            const [{ name, nodes, groups, bundles }] = response.body;
+
+            expect(typeof name).toBe('string');
+            expect(typeof nodes).toBe('object');
+            expect(typeof groups).toBe('object');
+            expect(typeof bundles).toBe('object');
+
+            expect(name).toEqual(createEnvironmentDto1.name);
+            expect(nodes).toEqual([]);
+            expect(groups).toEqual([]);
+            expect(bundles).toEqual([]);
+          });
+      });
+    });
+
+    describe('READ', () => {
+      /*
+      beforeAll(async () => {
+        await request(app.getHttpServer())
+          .post(ENV_ENDPOINT)
+          .set('Accept', 'application/json')
+          .send(createEnvironmentDto1);
+      });
+
+      it('should read the list of environment'){}
+      */
+    });
+
+    describe('UPDATE', () => {
+      beforeEach(async () => {
+        await request(app.getHttpServer())
+          .post(ENV_ENDPOINT)
+          .set('Accept', 'application/json')
+          .send(createEnvironmentDto1);
+      });
+
+      it('should update the environment name', async () => {
+        const updateEnvironmentDto = {
+          name: 'newName',
+        } as UpdateEnvironmentDto;
+
+        await request(app.getHttpServer())
+          .patch(ENV_ENDPOINT + '/' + createEnvironmentDto1.name)
+          .set('Accept', 'application/json')
+          .send(updateEnvironmentDto)
+          .expect(200)
+          .expect((response: request.Response) => {
+            const { name, nodes, groups, bundles } = response.body;
+
+            expect(typeof name).toBe('string');
+            expect(typeof nodes).toBe('object');
+            expect(typeof groups).toBe('object');
+            expect(typeof bundles).toBe('object');
+
+            expect(name).toEqual(updateEnvironmentDto.name);
+            expect(nodes).toEqual([]);
+            expect(groups).toEqual([]);
+            expect(bundles).toEqual([]);
+          });
+      });
+      it('should not update the environment name (null value) and respond Http Code 200', async () => {
+        const updateEnvironmentDto = {
+          name: null,
+        } as UpdateEnvironmentDto;
+
+        await request(app.getHttpServer())
+          .patch(ENV_ENDPOINT + '/' + createEnvironmentDto1.name)
+          .set('Accept', 'application/json')
+          .send(updateEnvironmentDto)
+          .expect(200)
+          .expect((response: request.Response) => {
+            const { name, nodes, groups, bundles } = response.body;
+
+            expect(typeof name).toBe('string');
+            expect(typeof nodes).toBe('object');
+            expect(typeof groups).toBe('object');
+            expect(typeof bundles).toBe('object');
+
+            expect(name).toEqual(createEnvironmentDto1.name);
+            expect(nodes).toEqual([]);
+            expect(groups).toEqual([]);
+            expect(bundles).toEqual([]);
+          });
+      });
+
+      it('should not update the environment name (undefined value) and respond Http Code 200', async () => {
+        const updateEnvironmentDto = {
+          name: undefined,
+        } as UpdateEnvironmentDto;
+
+        await request(app.getHttpServer())
+          .patch(ENV_ENDPOINT + '/' + createEnvironmentDto1.name)
+          .set('Accept', 'application/json')
+          .send(updateEnvironmentDto)
+          .expect(200)
+          .expect((response: request.Response) => {
+            const { name, nodes, groups, bundles } = response.body;
+
+            expect(typeof name).toBe('string');
+            expect(typeof nodes).toBe('object');
+            expect(typeof groups).toBe('object');
+            expect(typeof bundles).toBe('object');
+
+            expect(name).toEqual(createEnvironmentDto1.name);
+            expect(nodes).toEqual([]);
+            expect(groups).toEqual([]);
+            expect(bundles).toEqual([]);
+          });
+      });
+
+      it('should not update the environment name (wrong type) and respond Http Code 400', async () => {
+        const updateEnvironmentDto = {
+          name: 3,
+        };
+
+        await request(app.getHttpServer())
+          .patch(ENV_ENDPOINT + '/' + createEnvironmentDto1.name)
+          .set('Accept', 'application/json')
+          .send(updateEnvironmentDto)
+          .expect(400);
+      });
+    });
+
+    describe('DELETE', () => {});
+  });
+
+  describe('/bundles endpoint tests', () => {
+    beforeEach(async () => {
+      //---------------------------------------------------- OS creation
+      await request(app.getHttpServer())
+        .post(OS_ENDPOINT)
+        .set('Accept', 'application/json')
+        .send({ osName: 'debian' });
+
+      await request(app.getHttpServer())
+        .post(OS_ENDPOINT)
+        .set('Accept', 'application/json')
+        .send({ osName: 'windows' });
+
+      await request(app.getHttpServer())
+        .post(OS_ENDPOINT)
+        .set('Accept', 'application/json')
+        .send({ osName: 'ubuntu' });
+
+      await request(app.getHttpServer())
+        .post(OS_ENDPOINT)
+        .set('Accept', 'application/json')
+        .send({ osName: 'darwin' });
+
+      const osList = ['debian', 'windows', 'ubuntu', 'darwin'];
+
+      //---------------------------------------------------- Grpack creation
+      for (let i = 0; i < 10; i++) {
+        const grpackName = 'Grpack_' + i;
+        const grpackDto = { name: grpackName } as CreateGrpackDto;
+
+        await request(app.getHttpServer())
+          .post(GRPACK_ENDPOINT)
+          .set('Accept', 'application/json')
+          .send(grpackDto);
+        //--------------------------------------------------------------------- Package creation for each
+        osList.forEach(async (osName) => {
+          const createPackageDto = {
+            os: osName,
+            packageName: 'packageName',
+            version: 'latest',
+          } as CreatePackageDto;
+
+          await request(app.getHttpServer())
+            .post(GRPACK_ENDPOINT + '/' + grpackName + '/packages')
+            .set('Accept', 'application/json')
+            .send(createPackageDto);
+        });
+      }
+    });
+
+    it('/ (GET)', () => {
+      return request(app.getHttpServer())
+        .get('/grpack')
+        .expect(200)
+        .expect((response: Response) => {
+          console.log(response.body);
+        });
+    });
+  });
+});

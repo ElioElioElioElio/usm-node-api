@@ -1,10 +1,9 @@
-import { IsNotEmpty, IsOptional } from 'class-validator';
-import { CreateNodeGroupDto } from '../../../node-group/dto/create-node-group.dto';
-import { CreateGrpackBundleDto } from '../../../grpack-bundle/dto/create-grpack-bundle.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateEnvironmentDto {
   @ApiProperty()
   @IsNotEmpty()
-  readonly name: string;
+  @IsString()
+  readonly name!: string;
 }

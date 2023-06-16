@@ -1,16 +1,31 @@
-import { Entity, ManyToOne } from '@mikro-orm/core';
+import {
+  Cascade,
+  Entity,
+  ManyToOne,
+  Property,
+  PrimaryKeyType,
+} from '@mikro-orm/core';
 import { Os } from './os.entity';
-import { PackageData } from './package-data.entity';
 import { Grpack } from './grpack.entity';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 @Entity()
 export class Package {
   @ManyToOne({ primary: true })
   os!: Os;
 
-  @ManyToOne({ primary: true })
-  packageData!: PackageData;
+  @Property()
+  @IsString()
+  @IsNotEmpty()
+  packageName!: string;
 
-  @ManyToOne()
+  @Property()
+  @IsString()
+  @IsNotEmpty()
+  version!: string;
+
+  @ManyToOne({ primary: true, cascade: [Cascade.REMOVE] })
   grpack!: Grpack;
+
+  [PrimaryKeyType]?: [Os, Grpack];
 }

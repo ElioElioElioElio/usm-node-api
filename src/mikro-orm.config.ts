@@ -7,7 +7,8 @@ export default defineConfig({
   port: 5432,
   user: 'postgres',
   password: 'example',
-  dbName: 'nodeUsmApi',
+  dbName: 'testNodeUsmApi',
+  //dbName: 'nodeUsmApi',
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
   metadataProvider: TsMorphMetadataProvider,
@@ -16,4 +17,5 @@ export default defineConfig({
     glob: '!(*.d).{js,ts}',
   },
   validate: true,
+  debug: true,
 });

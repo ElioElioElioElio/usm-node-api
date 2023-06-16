@@ -5,15 +5,15 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { Node } from './entities/node.entity';
 import { Environment } from '../environment/entities/environment.entity';
 import { EnvironmentService } from '../environment/environment.service';
-import { NodeGroupService } from '../node-group/node-group.service';
-import { GrpackBundle } from '../grpack-bundle/entities/grpack-bundle.entity';
-import { GrpackBundleService } from '../grpack-bundle/grpack-bundle.service';
-import { NodeGroup } from '../node-group/entities/node-group.entity';
+import { NodeGroupService } from '../group/group.service';
+import { Bundle } from '../bundle/entities/bundle.entity';
+import { BundleService } from '../bundle/bundle.service';
+import { Group } from '../group/entities/group.entity';
 
 @Module({
   imports: [
     MikroOrmModule.forFeature({
-      entities: [Node, Environment, NodeGroup, GrpackBundle],
+      entities: [Node, Environment, Group, Bundle],
     }),
   ],
   controllers: [NodeController],
@@ -21,7 +21,7 @@ import { NodeGroup } from '../node-group/entities/node-group.entity';
     NodeService,
     EnvironmentService,
     NodeGroupService,
-    GrpackBundleService,
+    BundleService,
   ],
 })
 export class NodeModule {}

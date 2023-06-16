@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateGrpackDto {
   @ApiProperty()
-  name: string;
+  @IsNotEmpty()
+  @IsString()
+  name!: string;
 }

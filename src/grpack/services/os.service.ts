@@ -16,25 +16,31 @@ export class OsService {
   async create(createOsDto: CreateOsDto) {
     const os = this.osRepository.create(createOsDto);
     await this.em.persistAndFlush(os);
-    return os;
+    return await this.findOne(os.osName);
   }
 
   async findAll() {
     return this.osRepository.findAll();
   }
 
-  findOne(osName: string, version: string) {
-    return this.osRepository.findOneOrFail({
+  async findOne(osName: string) {
+    return await this.osRepository.findOneOrFail({
       osName: osName,
-      version: version,
     });
   }
 
-  update(id: string, updateGrpackDto: UpdateOsDto) {
-    return `This action updates a #${id} os`;
+  async update(id: string, updateOsDto: UpdateOsDto) {
+    const os = await this.findOne(id);
+
+    if (!!updateOsDto.osName) {
+      os.osName = updateOsDto.osName;
+      this.em.persistAndFlush(os);
+    }
+    return os;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} os`;
+  async remove(id: string) {
+    const os = await this.findOne(id);
+    await this.em.removeAndFlush(os);
   }
 }

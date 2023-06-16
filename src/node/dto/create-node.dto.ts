@@ -11,12 +11,12 @@ export class CreateNodeDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
-  grpacks: [string];
+  grpacks?: [string];
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  grpackBundle?: string;
+  bundle?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
