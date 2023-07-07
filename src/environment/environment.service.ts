@@ -50,10 +50,6 @@ export class EnvironmentService extends EntityService<Environment> {
         'groups.grpacks',
       ],
     });
-    envs.forEach(async (env) => {
-      await env.nodes.loadItems();
-      env.nodes.set(env.nodes.getItems().filter((node) => node.group === null));
-    });
     return envs;
   }
 
@@ -72,11 +68,9 @@ export class EnvironmentService extends EntityService<Environment> {
         'nodes.grpacks',
         'groups',
         'groups.nodes',
+        'groups.grpacks',
       ],
     });
-
-    await env.nodes.loadItems();
-    env.nodes.set(env.nodes.getItems().filter((node) => node.group === null));
 
     return env;
   }

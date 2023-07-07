@@ -14,6 +14,7 @@ import {
 } from '@mikro-orm/core';
 import { EnvironmentService } from '../environment/environment.service';
 import { EntityService } from '../shared/services/entity.service';
+import { GrpackService } from '../grpack/services/grpack.service';
 
 @Injectable()
 export class BundleService extends EntityService<Bundle> {
@@ -22,6 +23,7 @@ export class BundleService extends EntityService<Bundle> {
     protected readonly bundleRepository: EntityRepository<Bundle>,
     protected readonly em: EntityManager,
     private readonly envService: EnvironmentService,
+    private readonly grpackService: GrpackService,
   ) {
     super(bundleRepository, em);
   }
@@ -37,28 +39,33 @@ export class BundleService extends EntityService<Bundle> {
 
     //Populate grpacks of the bundle with reference of grpack
     if (!!createBundleDto.grpacks) {
-      createBundleDto.grpacks
-        .map((grpackName) => this.getRefGrpackFromId(grpackName))
-        .forEach((element) => {
-          bundle.grpacks.add(element);
-        });
+      await Promise.all(
+        createBundleDto.grpacks.map(async (grpackName) => {
+          const grpack = await this.grpackService.findOne(grpackName);
+          return grpack;
+        }),
+      ).then((grpacks) =>
+        grpacks.forEach((element) => bundle.grpacks.add(element)),
+      );
     }
 
-    if (!!createBundleDto.bundle) {
-      bundle.bundle = await this.bundleRepository.findOneOrFail({
-        name: createBundleDto.bundle,
-      });
+    if (createBundleDto.bundle !== undefined) {
+      if (createBundleDto.bundle !== null) {
+        bundle.bundle = await this.bundleRepository.findOneOrFail(
+          {
+            name: createBundleDto.bundle,
+          },
+          { populate: ['name'] },
+        );
+      } else {
+        bundle.bundle = null;
+      }
     }
 
     await this.em.persistAndFlush(bundle);
-
-    //await bundle.grpacks.init();
+    await bundle.grpacks.init();
 
     return bundle;
-
-    const bundlePopulated = await this.em.populate(bundle, true);
-
-    return bundlePopulated[0];
   }
 
   async update(
@@ -90,38 +97,53 @@ export class BundleService extends EntityService<Bundle> {
 
     //Populate grpacks of the bundle with reference of grpack
     if (!!updateBundleDto.grpacks) {
-      updateBundleDto.grpacks
-        .map((grpackName) => this.getRefGrpackFromId(grpackName))
-        .forEach((element) => {
-          bundle.grpacks.add(element);
-        });
+      bundle.grpacks.removeAll();
+      await Promise.all(
+        updateBundleDto.grpacks.map(async (grpackName) => {
+          const grpack = await this.grpackService.findOne(grpackName);
+          return grpack;
+        }),
+      ).then((grpacks) =>
+        grpacks.forEach((element) => bundle.grpacks.add(element)),
+      );
     }
 
-    if (!!updateBundleDto.bundle) {
-      bundle.bundle = await this.bundleRepository.findOneOrFail({
-        name: updateBundleDto.bundle,
-      });
+    if (updateBundleDto.bundle !== undefined) {
+      if (updateBundleDto.bundle !== null) {
+        bundle.bundle = await this.bundleRepository.findOneOrFail(
+          {
+            name: updateBundleDto.bundle,
+          },
+          { populate: ['name'] },
+        );
+      } else {
+        bundle.bundle = null;
+      }
     }
 
-    this.em.persistAndFlush(bundle);
+    await this.em.persistAndFlush(bundle);
 
     return bundle;
   }
 
   async findAll() {
-    return await this.repository.findAll();
+    return await this.repository.findAll({
+      populate: ['bundle', 'environment', 'grpacks', 'name'],
+    });
   }
 
   async findOneBy(
     filterQuery: FilterQuery<Bundle>,
     findOptions?: FindOptions<Bundle, never>,
   ): Promise<Loaded<Bundle, never>> {
-    const bundle = await this.repository.findOneOrFail(filterQuery);
+    const bundle = await this.repository.findOneOrFail(filterQuery, {
+      populate: ['bundle', 'environment', 'grpacks', 'name'],
+    });
 
     return bundle;
   }
 
-  private getRefGrpackFromId(grpackName: string): Reference<Grpack> {
+  private getRefGrpackFromId(grpackName: string) {
     const repo = this.em.getRepository(Grpack);
     return repo.getReference(grpackName, { wrapped: true });
   }

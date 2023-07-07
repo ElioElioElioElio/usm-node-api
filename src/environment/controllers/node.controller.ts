@@ -49,12 +49,12 @@ export class NodeController {
   }
 
   @Patch('nodes/:idNode')
-  update(
+  async update(
     @Param('idEnv') idEnv: string,
     @Param('idNode') idNode: string,
     @Body() updateEnvironmentDto: UpdateNodeDto,
   ) {
-    return this.nodeService.update(idNode, updateEnvironmentDto);
+    return await this.nodeService.update(idNode, updateEnvironmentDto);
   }
 
   @Delete('nodes/:idNode')

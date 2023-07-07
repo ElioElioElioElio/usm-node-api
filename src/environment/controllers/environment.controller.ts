@@ -24,6 +24,7 @@ export class EnvironmentController {
 
   @Get()
   async findAll() {
+    console.log(process.env.TEST);
     return await this.environmentService.findAll();
   }
 

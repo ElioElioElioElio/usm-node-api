@@ -7,7 +7,9 @@ export class PackageFactory extends Factory<Package> {
 
   protected definition(faker: Faker): EntityData<Package> {
     return {
-      packageName: faker.helpers.unique(faker.name.firstName),
+      packageName: faker.helpers.unique(() => {
+        return faker.name.firstName() + '_' + faker.random.alphaNumeric(3);
+      }),
       version:
         faker.random.numeric(1) +
         '.' +

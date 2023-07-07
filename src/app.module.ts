@@ -11,9 +11,13 @@ import { BundleModule } from './bundle/bundle.module';
 import { APP_FILTER } from '@nestjs/core';
 import { UniqueConstraintViolationExceptionFilter } from './shared/exception-filters/unique-constraint-violation.exception-filter';
 import { NotFoundErrorExceptionFilter } from './shared/exception-filters/not-found.exception-filter';
+import { ConfigModule } from '@nestjs/config';
+import { LoginModule } from './login/login.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     MikroOrmModule.forRoot(),
     EnvironmentModule,
     SharedModule,
@@ -21,6 +25,8 @@ import { NotFoundErrorExceptionFilter } from './shared/exception-filters/not-fou
     NodeModule,
     NodeGroupModule,
     BundleModule,
+    LoginModule,
+    PassportModule.register({ session: true }),
   ],
   controllers: [AppController],
   providers: [

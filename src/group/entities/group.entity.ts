@@ -15,7 +15,6 @@ import { Bundle } from '../../bundle/entities/bundle.entity';
 @Entity()
 export class Group extends Component {
   @ManyToOne({
-    cascade: [Cascade.REMOVE],
     serializer(environment: Environment) {
       return environment.name;
     },
@@ -23,7 +22,6 @@ export class Group extends Component {
   environment!: Environment;
 
   @ManyToOne({
-    cascade: [Cascade.REMOVE],
     serializer(bundle: Bundle) {
       if (!!bundle) {
         return bundle.name;
@@ -35,9 +33,10 @@ export class Group extends Component {
 
   @ManyToMany({
     serializer(grpacks: Collection<Grpack>) {
-      return grpacks.getItems().map((grpack) => {
+      const test = grpacks.getItems().map((grpack) => {
         return grpack.name;
       });
+      return test;
     },
   })
   grpacks? = new Collection<Grpack>(this);

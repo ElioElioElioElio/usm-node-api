@@ -17,5 +17,5 @@ export default defineConfig({
     glob: '!(*.d).{js,ts}',
   },
   validate: true,
-  debug: true,
+  debug: false,
 });

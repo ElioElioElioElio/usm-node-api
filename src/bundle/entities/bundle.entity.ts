@@ -1,5 +1,4 @@
 import {
-  Cascade,
   Collection,
   Entity,
   ManyToMany,
@@ -10,15 +9,12 @@ import {
 import { Environment } from '../../environment/entities/environment.entity';
 import { Grpack } from '../../grpack/entities/grpack.entity';
 
-const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
 @Entity()
 export class Bundle {
   @PrimaryKey({ length: 50 })
   name!: string;
 
   @ManyToOne({
-    cascade: [Cascade.REMOVE],
     serializer: (environment: Environment) => {
       return environment.name;
     },
@@ -27,13 +23,10 @@ export class Bundle {
 
   @ManyToMany({
     serializer(grpacks: Collection<Grpack>) {
-      /*
-      console.log('serialize: ');
-      console.log(value);
-      */
-      return grpacks.getItems().map((grpack) => {
+      const test = grpacks.getItems().map((grpack) => {
         return grpack.name;
       });
+      return test;
     },
   })
   grpacks? = new Collection<Grpack>(this);

@@ -7,7 +7,18 @@ export class OsFactory extends Factory<Os> {
 
   definition(faker: Faker): Partial<Os> {
     return {
-      osName: faker.helpers.unique(faker.animal.dog),
+      osName: faker.helpers.unique(() => {
+        return (
+          faker.animal.dog +
+          ' ' +
+          faker.random.alphaNumeric(1) +
+          '.' +
+          faker.random.alphaNumeric(1) +
+          '.' +
+          faker.random.alphaNumeric(1) +
+          '.'
+        );
+      }),
     };
   }
 }

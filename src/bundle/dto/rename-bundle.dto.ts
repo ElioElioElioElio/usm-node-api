@@ -16,5 +16,5 @@ export class CreateBundleDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  bundle?: string;
+  bundle?: string | null;
 }

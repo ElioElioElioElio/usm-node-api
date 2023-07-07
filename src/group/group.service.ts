@@ -10,14 +10,16 @@ import { FilterQuery, FindOptions, Loaded, Reference } from '@mikro-orm/core';
 import { Grpack } from '../grpack/entities/grpack.entity';
 import { Node } from '../node/entities/node.entity';
 import { BundleService } from '../bundle/bundle.service';
+import { GrpackService } from '../grpack/services/grpack.service';
 
 @Injectable()
 export class NodeGroupService extends EntityService<Group> {
   constructor(
     @InjectRepository(Group) protected nodeGroupRepo: EntityRepository<Group>,
-    protected em: EntityManager,
+    protected readonly em: EntityManager,
     private readonly envService: EnvironmentService,
     private readonly bundleService: BundleService,
+    private readonly grpackService: GrpackService,
   ) {
     super(nodeGroupRepo, em);
   }
@@ -34,11 +36,14 @@ export class NodeGroupService extends EntityService<Group> {
 
     //Populate grpacks included via mikroorm refs if exists
     if (!!createGroupDto.grpacks) {
-      createGroupDto.grpacks
-        .map((grpackName) => this.getRefGrpackFromId(grpackName))
-        .forEach((element) => {
-          group.grpacks.add(element);
-        });
+      await Promise.all(
+        createGroupDto.grpacks.map(async (grpackName) => {
+          const grpack = await this.grpackService.findOne(grpackName);
+          return grpack;
+        }),
+      ).then((grpacks) =>
+        grpacks.forEach((element) => group.grpacks.add(element)),
+      );
     }
 
     //Populate nodes included via mikroorm refs if exists
@@ -67,7 +72,10 @@ export class NodeGroupService extends EntityService<Group> {
     updateGroupDto: UpdateGroupDto,
     environmentName?: string,
   ) {
-    const group = await this.findOneBy({ name: groupName });
+    const group = await this.findOneBy({
+      environment: environmentName,
+      name: groupName,
+    });
 
     if (!!environmentName) {
       if (group.environment.name === environmentName) {

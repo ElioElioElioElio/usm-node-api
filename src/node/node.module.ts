@@ -9,11 +9,13 @@ import { NodeGroupService } from '../group/group.service';
 import { Bundle } from '../bundle/entities/bundle.entity';
 import { BundleService } from '../bundle/bundle.service';
 import { Group } from '../group/entities/group.entity';
+import { Grpack } from '../grpack/entities/grpack.entity';
+import { GrpackService } from '../grpack/services/grpack.service';
 
 @Module({
   imports: [
     MikroOrmModule.forFeature({
-      entities: [Node, Environment, Group, Bundle],
+      entities: [Node, Environment, Group, Bundle, Grpack],
     }),
   ],
   controllers: [NodeController],
@@ -22,6 +24,7 @@ import { Group } from '../group/entities/group.entity';
     EnvironmentService,
     NodeGroupService,
     BundleService,
+    GrpackService,
   ],
 })
 export class NodeModule {}

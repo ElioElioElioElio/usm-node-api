@@ -4,9 +4,29 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { EnvironmentModule } from './environment/environment.module';
 import { GrpackModule } from './grpack/grpack.module';
+import * as session from 'express-session';
+import * as passport from 'passport';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { snapshot: true });
+  //---HTTPS--------------------------------------------------------------------------------------------------------------
+  const httpsOptions = {
+    key: fs.readFileSync('./secrets/cert.key'),
+    cert: fs.readFileSync('./secrets/cert.crt'),
+  };
+
+  const app = await NestFactory.create(AppModule, {
+    httpsOptions,
+  });
+
+  /*
+  const app = await NestFactory.create(AppModule, {
+    snapshot: true,
+  });
+  */
+
+  app.enableCors({ origin: ['http://localhost:5173'] });
+
   app.useGlobalPipes(new ValidationPipe());
 
   //---ENVIRONMENT ENDPOINT--------------------------------------------------------------------------------------------------------------
@@ -30,6 +50,17 @@ async function bootstrap() {
     include: [GrpackModule],
   });
   SwaggerModule.setup('doc/grpack', app, grpackDoument);
+
+  app.use(
+    session({
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: false,
+      cookie: { secure: true },
+    }),
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   await app.listen(3000);
 }

@@ -7,7 +7,7 @@ export class GroupFactory extends Factory<Group> {
 
   protected definition(faker: Faker): EntityData<Group> {
     return {
-      name: faker.helpers.unique(() => faker.random.numeric(3)),
+      name: faker.helpers.unique(() => faker.random.alphaNumeric(3)),
     };
   }
 }

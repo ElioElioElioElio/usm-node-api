@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { UpdateNodeDto } from './dto/update-node.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Node } from './entities/node.entity';
@@ -10,6 +15,7 @@ import { NodeGroupService } from '../group/group.service';
 import { BundleService } from '../bundle/bundle.service';
 import { EntityService } from '../shared/services/entity.service';
 import { CreateNodeDto } from './dto/create-node.dto';
+import { GrpackService } from '../grpack/services/grpack.service';
 
 @Injectable()
 export class NodeService extends EntityService<Node> {
@@ -18,8 +24,10 @@ export class NodeService extends EntityService<Node> {
     private readonly nodeRepository: EntityRepository<Node>,
     readonly em: EntityManager,
     private readonly envService: EnvironmentService,
+    @Inject(forwardRef(() => NodeGroupService))
     private readonly nodeGroupService: NodeGroupService,
     private readonly bundleService: BundleService,
+    private readonly grpackService: GrpackService,
   ) {
     super(nodeRepository, em);
   }
@@ -37,17 +45,20 @@ export class NodeService extends EntityService<Node> {
 
     //Populate grpacks included via mikroorm refs if exists
     if (!!createNodeDto.grpacks) {
-      createNodeDto.grpacks
-        .map((grpackName) => this.getRefGrpackFromId(grpackName))
-        .forEach((element) => {
-          node.grpacks.add(element);
-        });
+      await Promise.all(
+        createNodeDto.grpacks.map(async (grpackName) => {
+          const grpack = await this.grpackService.findOne(grpackName);
+          return grpack;
+        }),
+      ).then((grpacks) =>
+        grpacks.forEach((element) => node.grpacks.add(element)),
+      );
     }
     //Populate nodeGroup if exists
-    if (!!createNodeDto.nodeGroup) {
+    if (!!createNodeDto.group) {
       node.group = await this.nodeGroupService.findOneBy(
         {
-          name: createNodeDto.nodeGroup,
+          name: createNodeDto.group,
         },
         { populate: true },
       );
@@ -74,9 +85,9 @@ export class NodeService extends EntityService<Node> {
     updateNodeDto: UpdateNodeDto,
     environmentName?: string,
   ) {
-    const node = await this.findOneBy({ name: nodeName }, {});
+    const node = await this.findOneBy({ name: nodeName }, { populate: true });
 
-    if (!!environmentName) {
+    if (!!node) {
       if (node.environment.name === environmentName) {
         throw new NotFoundException(
           "Node '" +
@@ -96,35 +107,45 @@ export class NodeService extends EntityService<Node> {
     //Populate grpacks included via mikroorm refs if exists
     if (!!updateNodeDto.grpacks) {
       node.grpacks.removeAll();
-      updateNodeDto.grpacks
-        .map((grpackName) => this.getRefGrpackFromId(grpackName))
-        .forEach((element) => {
-          node.grpacks.add(element);
-        });
+      await Promise.all(
+        updateNodeDto.grpacks.map(async (grpackName) => {
+          const grpack = await this.grpackService.findOne(grpackName);
+          return grpack;
+        }),
+      ).then((grpacks) =>
+        grpacks.forEach((element) => node.grpacks.add(element)),
+      );
     }
 
     //Populate nodeGroup if exists
-    if (!!updateNodeDto.nodeGroup) {
-      node.group = await this.nodeGroupService.findOneBy(
-        {
-          name: updateNodeDto.nodeGroup,
-        },
-        {},
-      );
+    if (updateNodeDto.group !== undefined) {
+      if (updateNodeDto.group !== null) {
+        node.group = await this.nodeGroupService.findOneBy({
+          name: updateNodeDto.group,
+        });
+      } else {
+        node.group = null;
+      }
     }
 
     //Populate bundle if exists
-    if (!!updateNodeDto.bundle) {
-      node.bundle = await this.bundleService.findOneBy(
-        {
-          name: updateNodeDto.bundle,
-        },
-        {},
-      );
+    if (updateNodeDto.bundle !== undefined) {
+      if (updateNodeDto.bundle !== null) {
+        node.bundle = await this.bundleService.findOneBy(
+          {
+            name: updateNodeDto.bundle,
+          },
+          {},
+        );
+      } else {
+        node.bundle = null;
+      }
     }
 
     //Persist update
-    this.em.persistAndFlush(node);
+    await this.em.persistAndFlush(node);
+
+    return node;
   }
 
   private getRefGrpackFromId(grpackName: string): Reference<Grpack> {

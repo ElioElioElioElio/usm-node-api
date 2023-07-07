@@ -21,5 +21,5 @@ export class CreateNodeDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  nodeGroup?: string;
+  group?: string;
 }

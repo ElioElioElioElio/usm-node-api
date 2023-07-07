@@ -16,16 +16,20 @@ import { SharedModule } from '../shared/shared.module';
 import { Node } from '../node/entities/node.entity';
 import { GroupController } from './controllers/group.controller';
 import { BundleController } from './controllers/bundle.controller';
+import { GrpackModule } from '../grpack/grpack.module';
+import { GrpackService } from '../grpack/services/grpack.service';
+import { Grpack } from '../grpack/entities/grpack.entity';
 
 @Module({
   imports: [
     MikroOrmModule.forFeature({
-      entities: [Environment, Node, Group, Bundle],
+      entities: [Environment, Node, Bundle, Grpack, Group],
     }),
     NodeModule,
     SharedModule,
-    NodeGroupModule,
     BundleModule,
+    GrpackModule,
+    NodeGroupModule,
   ],
   controllers: [
     EnvironmentController,
@@ -33,6 +37,12 @@ import { BundleController } from './controllers/bundle.controller';
     GroupController,
     BundleController,
   ],
-  providers: [EnvironmentService, NodeService, NodeGroupService, BundleService],
+  providers: [
+    EnvironmentService,
+    NodeService,
+    BundleService,
+    GrpackService,
+    NodeGroupService,
+  ],
 })
 export class EnvironmentModule {}

@@ -60,10 +60,8 @@ export class OneEnvironmentSeeder extends Seeder {
               node.grpacks.set(
                 shuffleArray(grpackList).slice(0, getRandomInt(3, 15)),
               );
-              if (Math.random() >= 0.75) {
-                node.bundle =
-                  bundleList[Math.floor(Math.random() * bundleList.length)];
-              }
+              node.bundle =
+                bundleList[Math.floor(Math.random() * bundleList.length)];
             })
             .make(getRandomInt(25, 75)),
         );
@@ -76,10 +74,8 @@ export class OneEnvironmentSeeder extends Seeder {
               group.environment = env;
 
               // -------------------------------------------------------------- Environments/Group/Bundle
-              if (Math.random() >= 0.35) {
-                group.bundle =
-                  bundleList[Math.floor(Math.random() * bundleList.length)];
-              }
+              group.bundle =
+                bundleList[Math.floor(Math.random() * bundleList.length)];
 
               // -------------------------------------------------------------- Environments/Group/Grpacks
               group.grpacks.set(

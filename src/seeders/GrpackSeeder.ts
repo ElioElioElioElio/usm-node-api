@@ -29,6 +29,6 @@ export class GrpackSeeder extends Seeder {
             .create(osForThisPackage.length),
         );
       })
-      .create(25);
+      .create(50);
   }
 }

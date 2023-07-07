@@ -11,16 +11,16 @@ export class CreateGroupDto {
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
-  grpacks?: [string];
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  bundle?: string;
+  grpacks?: string[];
 
   @ApiProperty()
   @IsArray()
   @IsOptional()
   @IsString({ each: true })
   nodes?: [string];
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  bundle?: string;
 }
